@@ -5,43 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Мой сайт</title>
     <style>
+        /* Основной стиль */
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
             background-color: #f0f0f0;
-            padding: 40px;
         }
-        img {
-            max-width: 80%;
-            height: auto;
-            border-radius: 10px;
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        audio {
-            margin: 10px 0;
-            width: 80%;
+
+        .image-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Изменяет размер изображения, чтобы оно полностью занимало экран */
+        }
+
+        .audio-container {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 60%; /* Размер контейнера для аудио */
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .audio-container audio {
+            width: 90%;
         }
     </style>
 </head>
 <body>
 
-    <!-- Фото -->
-    <img src="https://i1.sndcdn.com/artworks-Dl1UEMxv8iFEwzsM-qkEZ3g-t1080x1080.png " alt="Мое фото">
-
-    <h2>Звуковые файлы</h2>
-
-    <!-- Звук 1 -->
-    <p>Звук 1</p>
-    <audio id="gryzt-kakashki.mp3" controls>
-        <source src="sound1.mp3" type="audio/mpeg">
-        Ваш браузер не поддерживает аудио.
-    </audio>
-
-    <!-- Звук 2 -->
-    <p>Звук 2</p>
-    <audio id="audio2" controls>
-        <source src="sound2.mp3" type="audio/mpeg">
-        Ваш браузер не поддерживает аудио.
-    </audio>
+    <div class="container">
+        <div class="image-container">
+            <img src="https://i1.sndcdn.com/artworks-Dl1UEMxv8iFEwzsM-qkEZ3g-t1080x1080.png " alt="Мое фото">
+        </div>
+        <div class="audio-container">
+            <audio id="audio1" controls>
+                <source src="gryzt-kakashki.mp3" type="audio/mpeg">
+                Ваш браузер не поддерживает аудио.
+            </audio>
+        </div>
+    </div>
 
 </body>
 </html>
