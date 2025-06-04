@@ -3,71 +3,835 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой сайт</title>
+    <title>Расширенная Текстовая RPG</title>
     <style>
-        /* Основной стиль */
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            background-color: #f0f0f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
         }
-
-        .container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        #game-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-
-        .image-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Изменяет размер изображения, чтобы оно полностью занимало экран */
+        #story {
+            min-height: 150px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
         }
-
-        .audio-container {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 60%; /* Размер контейнера для аудио */
-            height: 60px;
+        #choices {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: rgba(255, 255, 255, 0.7);
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: left;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        button.danger {
+            background-color: #f44336;
+        }
+        button.danger:hover {
+            background-color: #d32f2f;
+        }
+        button.primary {
+            background-color: #2196F3;
+        }
+        button.primary:hover {
+            background-color: #0b7dda;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
             padding: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #eee;
+            border-radius: 5px;
         }
-
-        .audio-container audio {
-            width: 90%;
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .inventory {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+        }
+        .inventory h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .inventory-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .item {
+            background-color: #e1f5fe;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        .enemy-info {
+            background-color: #ffebee;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <div class="image-container">
-            <img src="https://i1.sndcdn.com/artworks-Dl1UEMxv8iFEwzsM-qkEZ3g-t1080x1080.png " alt="Мое фото">
+    <div id="game-container">
+        <h1>Тёмные Земли</h1>
+        <div class="stats">
+            <div class="stat">
+                <span>Здоровье</span>
+                <span class="stat-value" id="health">100</span>
+            </div>
+            <div class="stat">
+                <span>Атака</span>
+                <span class="stat-value" id="attack">10</span>
+            </div>
+            <div class="stat">
+                <span>Защита</span>
+                <span class="stat-value" id="defense">5</span>
+            </div>
+            <div class="stat">
+                <span>Уровень</span>
+                <span class="stat-value" id="level">1</span>
+            </div>
+            <div class="stat">
+                <span>Опыт</span>
+                <span class="stat-value" id="xp">0</span>
+            </div>
+            <div class="stat">
+                <span>Золото</span>
+                <span class="stat-value" id="gold">50</span>
+            </div>
         </div>
-        <div class="audio-container">
-            <audio id="audio1" controls>
-                <source src="gryzt-kakashki.mp3" type="audio/mpeg">
-                Ваш браузер не поддерживает аудио.
-            </audio>
+
+        <div id="combat-screen" class="hidden">
+            <div class="enemy-info">
+                <h3 id="enemy-name">Враг</h3>
+                <div>Здоровье: <span id="enemy-health">100</span></div>
+                <div>Атака: <span id="enemy-attack">10</span></div>
+            </div>
+            <div id="combat-log"></div>
+            <div id="combat-choices" class="choices"></div>
+        </div>
+
+        <div id="story-screen">
+            <div id="story">Загрузка игры...</div>
+            <div id="choices" class="choices"></div>
+        </div>
+
+        <div class="inventory">
+            <h3>Инвентарь</h3>
+            <div id="inventory-items" class="inventory-items">Пусто</div>
+        </div>
+
+        <div class="controls">
+            <button id="save-btn" class="primary" onclick="saveGame()">Сохранить</button>
+            <button id="load-btn" class="primary" onclick="loadGame()">Загрузить</button>
+            <button id="reset-btn" class="danger" onclick="resetGame()">Сбросить</button>
         </div>
     </div>
 
+    <script>
+        // ===== ИГРОВЫЕ ДАННЫЕ =====
+        const items = {
+            'health_potion': {
+                name: 'Зелье здоровья',
+                description: 'Восстанавливает 30 HP',
+                use: (game) => { game.health = Math.min(game.maxHealth, game.health + 30); }
+            },
+            'sword': {
+                name: 'Стальной меч',
+                description: '+5 к атаке',
+                equip: { attack: 5 }
+            },
+            'shield': {
+                name: 'Деревянный щит',
+                description: '+3 к защите',
+                equip: { defense: 3 }
+            },
+            'artifact': {
+                name: 'Древний артефакт',
+                description: 'Дает +1 к уровню',
+                use: (game) => { game.level += 1; }
+            },
+            'key': {
+                name: 'Ключ от темницы',
+                description: 'Открывает тюремные камеры'
+            }
+        };
+
+        const enemies = {
+            'bear': {
+                name: 'Разъяренный медведь',
+                health: 60,
+                attack: 12,
+                defense: 4,
+                xp: 25,
+                gold: 15
+            },
+            'bandit': {
+                name: 'Лесной бандит',
+                health: 40,
+                attack: 15,
+                defense: 3,
+                xp: 20,
+                gold: 30
+            },
+            'skeleton': {
+                name: 'Оживший скелет',
+                health: 30,
+                attack: 10,
+                defense: 2,
+                xp: 15,
+                gold: 5
+            },
+            'dragon': {
+                name: 'Молодой дракон',
+                health: 120,
+                attack: 25,
+                defense: 10,
+                xp: 100,
+                gold: 200
+            }
+        };
+
+        const quests = {
+            'find_artifact': {
+                name: 'Найти древний артефакт',
+                description: 'Старец в деревне просит найти древний артефакт в храме',
+                reward: { xp: 50, gold: 100 },
+                requiredItem: 'artifact'
+            },
+            'defeat_dragon': {
+                name: 'Победить дракона',
+                description: 'Жители деревни в панике - дракон нападает на скот',
+                reward: { xp: 150, gold: 300 },
+                requiredKill: 'dragon'
+            },
+            'prison_key': {
+                name: 'Ключ от темницы',
+                description: 'Найти ключ, чтобы освободить пленников',
+                reward: { xp: 30 },
+                requiredItem: 'key'
+            }
+        };
+
+        // ===== ИГРОВОЕ СОСТОЯНИЕ =====
+        let gameState = {
+            // Основные параметры
+            health: 100,
+            maxHealth: 100,
+            attack: 10,
+            baseAttack: 10,
+            defense: 5,
+            baseDefense: 5,
+            xp: 0,
+            level: 1,
+            gold: 50,
+            
+            // Прогресс
+            currentScene: 'start',
+            visitedScenes: [],
+            completedQuests: [],
+            killedEnemies: [],
+            
+            // Инвентарь
+            inventory: [],
+            equipped: {
+                weapon: null,
+                armor: null
+            },
+            
+            // Бой
+            inCombat: false,
+            currentEnemy: null,
+            
+            // Квесты
+            activeQuests: []
+        };
+
+        // ===== СЦЕНЫ ИГРЫ =====
+        const scenes = {
+            'start': {
+                text: 'Ты просыпаешься на опушке леса. Вокруг тишина, только ветер шевелит листья. Перед тобой три тропинки:',
+                choices: [
+                    { text: 'Пойти на север - к деревне', nextScene: 'village', xp: 5 },
+                    { text: 'Пойти на восток - в лес', nextScene: 'forest', xp: 5 },
+                    { text: 'Пойти на запад - к горам', nextScene: 'mountains', xp: 5 }
+                ]
+            },
+            'village': {
+                text: 'Ты приходишь в небольшую деревню. Здесь есть несколько домов, кузница и таверна. У колодца стоит старец, который манит тебя к себе.',
+                choices: [
+                    { text: 'Подойти к старцу', nextScene: 'elder', xp: 5 },
+                    { text: 'Зайти в таверну', nextScene: 'tavern', xp: 5 },
+                    { text: 'Посетить кузницу', nextScene: 'blacksmith', xp: 5 },
+                    { text: 'Вернуться на опушку', nextScene: 'start' }
+                ]
+            },
+            'elder': {
+                text: 'Старец рассказывает, что в древнем храме на востоке есть артефакт, который может помочь в борьбе с пробуждающимся злом. Он просит тебя принести его.',
+                choices: [
+                    { text: 'Согласиться помочь (начать квест)', nextScene: 'accept_quest', xp: 10 },
+                    { text: 'Отказаться', nextScene: 'village' }
+                ]
+            },
+            'accept_quest': {
+                text: '"Отлично!" - говорит старец. "Артефакт находится в древнем храме за лесом. Будь осторожен, там могут быть ловушки."',
+                onEnter: (game) => {
+                    game.activeQuests.push('find_artifact');
+                    return 'Теперь у тебя есть квест: "Найти древний артефакт".';
+                },
+                choices: [
+                    { text: 'Вернуться в деревню', nextScene: 'village' }
+                ]
+            },
+            'tavern': {
+                text: 'В таверне шумно и многолюдно. За одним из столов сидит группа вооруженных людей. Бармен предлагает тебе выпить.',
+                choices: [
+                    { text: 'Выпить эль (5 золота, +10 HP)', nextScene: 'tavern_drink', gold: -5, health: 10 },
+                    { text: 'Поговорить с наемниками', nextScene: 'mercenaries', xp: 5 },
+                    { text: 'Выйти из таверны', nextScene: 'village' }
+                ]
+            },
+            'blacksmith': {
+                text: 'В кузнице жарко от горна. Кузнец предлагает тебе товары:',
+                choices: [
+                    { text: 'Купить меч (+5 атаки, 30 золота)', nextScene: 'buy_sword', gold: -30, item: 'sword' },
+                    { text: 'Купить щит (+3 защиты, 20 золота)', nextScene: 'buy_shield', gold: -20, item: 'shield' },
+                    { text: 'Выйти из кузницы', nextScene: 'village' }
+                ]
+            },
+            'forest': {
+                text: 'Густой лес полон странных звуков. Между деревьями мелькают тени. Впереди развилка:',
+                choices: [
+                    { text: 'Идти по тропинке вглубь леса', nextScene: 'deep_forest', xp: 5 },
+                    { text: 'Свернуть к ручью', nextScene: 'stream', xp: 5 },
+                    { text: 'Вернуться на опушку', nextScene: 'start' }
+                ]
+            },
+            'deep_forest': {
+                text: 'В глубине леса ты натыкаешься на разъяренного медведя! Он готовится к атаке!',
+                onEnter: (game) => {
+                    startCombat(game, 'bear');
+                    return 'Приготовься к бою!';
+                },
+                combat: true
+            },
+            'stream': {
+                text: 'У ручья ты находишь небольшой лагерь бандитов. Они еще не заметили тебя.',
+                choices: [
+                    { text: 'Напасть на бандитов', nextScene: 'attack_bandits', xp: 5 },
+                    { text: 'Попытаться обойти', nextScene: 'avoid_bandits', xp: 5 },
+                    { text: 'Вернуться в лес', nextScene: 'forest' }
+                ]
+            },
+            'attack_bandits': {
+                text: 'Ты решаешь атаковать бандитов!',
+                onEnter: (game) => {
+                    startCombat(game, 'bandit');
+                    return 'Бандиты бросаются в бой!';
+                },
+                combat: true
+            },
+            'mountains': {
+                text: 'Скалистые горы возвышаются перед тобой. Здесь холодно и ветрено. Видны два пути:',
+                choices: [
+                    { text: 'Подняться по крутой тропе', nextScene: 'mountain_path', xp: 5 },
+                    { text: 'Исследовать пещеру', nextScene: 'cave', xp: 5 },
+                    { text: 'Вернуться на опушку', nextScene: 'start' }
+                ]
+            },
+            'cave': {
+                text: 'Темная пещера кажется заброшенной, но в глубине виднеется слабый свет.',
+                choices: [
+                    { text: 'Исследовать дальше', nextScene: 'cave_deep', xp: 5 },
+                    { text: 'Выйти из пещеры', nextScene: 'mountains' }
+                ]
+            },
+            'cave_deep': {
+                text: 'В глубине пещеры ты находишь древний храм! На полу видны странные символы, а в центре на пьедестале лежит артефакт.',
+                choices: [
+                    { text: 'Взять артефакт', nextScene: 'take_artifact', item: 'artifact', xp: 20 },
+                    { text: 'Оставить на месте', nextScene: 'cave' }
+                ]
+            },
+            'temple': {
+                text: 'Ты входишь в древний храм. В воздухе витает магия. На стенах фрески, изображающие великую битву.',
+                choices: [
+                    { text: 'Исследовать алтарь', nextScene: 'altar', xp: 10 },
+                    { text: 'Выйти из храма', nextScene: 'forest' }
+                ],
+                onceOnly: true
+            },
+            'dragon_lair': {
+                text: 'В глубине пещеры ты находишь логово дракона! Огромный зверь просыпается и рычит!',
+                onEnter: (game) => {
+                    startCombat(game, 'dragon');
+                    return 'Дракон атакует! Это будет тяжелый бой!';
+                },
+                combat: true
+            }
+        };
+
+        // ===== ОСНОВНЫЕ ФУНКЦИИ ИГРЫ =====
+        function startGame() {
+            loadGame();
+            updateUI();
+        }
+
+        function updateUI() {
+            // Обновляем статистику
+            document.getElementById('health').textContent = `${gameState.health}/${gameState.maxHealth}`;
+            document.getElementById('attack').textContent = gameState.attack;
+            document.getElementById('defense').textContent = gameState.defense;
+            document.getElementById('level').textContent = gameState.level;
+            document.getElementById('xp').textContent = `${gameState.xp}/${getXpForNextLevel()}`;
+            document.getElementById('gold').textContent = gameState.gold;
+            
+            // Обновляем инвентарь
+            updateInventory();
+            
+            // Показываем текущую сцену
+            showScene(gameState.currentScene);
+        }
+
+        function updateInventory() {
+            const inventoryEl = document.getElementById('inventory-items');
+            
+            if (gameState.inventory.length === 0) {
+                inventoryEl.innerHTML = 'Пусто';
+                return;
+            }
+            
+            inventoryEl.innerHTML = '';
+            gameState.inventory.forEach(itemId => {
+                const item = items[itemId];
+                const itemEl = document.createElement('div');
+                itemEl.className = 'item';
+                itemEl.textContent = item.name;
+                itemEl.title = item.description;
+                itemEl.onclick = () => useItem(itemId);
+                inventoryEl.appendChild(itemEl);
+            });
+        }
+
+        function useItem(itemId) {
+            const item = items[itemId];
+            
+            if (item.use) {
+                item.use(gameState);
+                alert(`Использовано: ${item.name}`);
+                
+                // Удаляем одноразовые предметы
+                if (!item.equip) {
+                    gameState.inventory = gameState.inventory.filter(id => id !== itemId);
+                }
+                
+                updateUI();
+            } else if (item.equip) {
+                // Экипировка оружия/брони
+                if (item.equip.attack) {
+                    if (gameState.equipped.weapon) {
+                        // Снимаем предыдущее оружие
+                        gameState.attack = gameState.baseAttack;
+                    }
+                    gameState.equipped.weapon = itemId;
+                    gameState.attack = gameState.baseAttack + item.equip.attack;
+                } else if (item.equip.defense) {
+                    if (gameState.equipped.armor) {
+                        // Снимаем предыдущую броню
+                        gameState.defense = gameState.baseDefense;
+                    }
+                    gameState.equipped.armor = itemId;
+                    gameState.defense = gameState.baseDefense + item.equip.defense;
+                }
+                
+                alert(`Экипировано: ${item.name}`);
+                updateUI();
+            } else {
+                alert(`Этот предмет нельзя использовать напрямую: ${item.name}`);
+            }
+        }
+
+        function getXpForNextLevel() {
+            return gameState.level * 100;
+        }
+
+        function checkLevelUp() {
+            const neededXp = getXpForNextLevel();
+            if (gameState.xp >= neededXp) {
+                gameState.level += 1;
+                gameState.xp -= neededXp;
+                gameState.maxHealth += 20;
+                gameState.health = gameState.maxHealth;
+                gameState.baseAttack += 2;
+                gameState.baseDefense += 1;
+                gameState.attack = gameState.baseAttack + (gameState.equipped.weapon ? items[gameState.equipped.weapon].equip.attack : 0);
+                gameState.defense = gameState.baseDefense + (gameState.equipped.armor ? items[gameState.equipped.armor].equip.defense : 0);
+                
+                alert(`Поздравляем! Вы достигли уровня ${gameState.level}!`);
+                return true;
+            }
+            return false;
+        }
+
+        // ===== СИСТЕМА СЦЕН =====
+        function showScene(sceneId) {
+            const scene = scenes[sceneId];
+            
+            // Если сцена требует обработки при входе
+            let sceneText = scene.text;
+            if (scene.onEnter) {
+                const additionalText = scene.onEnter(gameState);
+                sceneText += '\n\n' + additionalText;
+            }
+            
+            document.getElementById('story').textContent = sceneText;
+            
+            const choicesDiv = document.getElementById('choices');
+            choicesDiv.innerHTML = '';
+            
+            // Если это боевая сцена, переключаемся на экран боя
+            if (scene.combat) {
+                document.getElementById('story-screen').classList.add('hidden');
+                document.getElementById('combat-screen').classList.remove('hidden');
+                return;
+            }
+            
+            // Показываем обычные выборы
+            scene.choices.forEach((choice, index) => {
+                const button = document.createElement('button');
+                button.textContent = choice.text;
+                
+                // Проверяем, можно ли выбрать этот вариант
+                let disabled = false;
+                let reason = '';
+                
+                // Проверяем золото
+                if (choice.gold && Math.abs(choice.gold) > gameState.gold) {
+                    disabled = true;
+                    reason = ' (недостаточно золота)';
+                }
+                
+                // Проверяем, была ли уже посещена сцена
+                if (scenes[choice.nextScene]?.onceOnly && gameState.visitedScenes.includes(choice.nextScene)) {
+                    disabled = true;
+                    reason = ' (уже было)';
+                }
+                
+                button.disabled = disabled;
+                if (disabled) {
+                    button.textContent += reason;
+                }
+                
+                button.onclick = () => makeChoice(index + 1, scene);
+                choicesDiv.appendChild(button);
+            });
+            
+            // Добавляем текущую сцену в посещенные
+            if (!gameState.visitedScenes.includes(sceneId)) {
+                gameState.visitedScenes.push(sceneId);
+            }
+        }
+
+        function makeChoice(choiceIndex, sceneData) {
+            const choice = sceneData.choices[choiceIndex - 1];
+            
+            // Обрабатываем последствия выбора
+            if (choice.gold) gameState.gold += choice.gold;
+            if (choice.health) gameState.health = Math.min(gameState.maxHealth, gameState.health + choice.health);
+            if (choice.xp) {
+                gameState.xp += choice.xp;
+                checkLevelUp();
+            }
+            if (choice.item) {
+                gameState.inventory.push(choice.item);
+                alert(`Получен предмет: ${items[choice.item].name}`);
+            }
+            
+            // Проверяем здоровье
+            if (gameState.health <= 0) {
+                endGame('К сожалению, ты погиб. Игра окончена.');
+                return;
+            }
+            
+            // Переходим к следующей сцене
+            gameState.currentScene = choice.nextScene;
+            updateUI();
+        }
+
+        // ===== БОЕВАЯ СИСТЕМА =====
+        function startCombat(game, enemyId) {
+            game.inCombat = true;
+            game.currentEnemy = { ...enemies[enemyId], id: enemyId, currentHealth: enemies[enemyId].health };
+            
+            document.getElementById('enemy-name').textContent = enemies[enemyId].name;
+            document.getElementById('enemy-health').textContent = `${game.currentEnemy.currentHealth}/${enemies[enemyId].health}`;
+            document.getElementById('enemy-attack').textContent = enemies[enemyId].attack;
+            
+            document.getElementById('story-screen').classList.add('hidden');
+            document.getElementById('combat-screen').classList.remove('hidden');
+            
+            const combatChoices = document.getElementById('combat-choices');
+            combatChoices.innerHTML = '';
+            
+            // Кнопки для боя
+            const attackBtn = document.createElement('button');
+            attackBtn.textContent = 'Атаковать';
+            attackBtn.onclick = () => combatAction('attack');
+            combatChoices.appendChild(attackBtn);
+            
+            const defendBtn = document.createElement('button');
+            defendBtn.textContent = 'Защищаться (+50% защиты на этот ход)';
+            defendBtn.onclick = () => combatAction('defend');
+            combatChoices.appendChild(defendBtn);
+            
+            // Проверяем, есть ли зелья здоровья
+            const hasPotion = gameState.inventory.includes('health_potion');
+            if (hasPotion) {
+                const potionBtn = document.createElement('button');
+                potionBtn.textContent = 'Использовать зелье здоровья';
+                potionBtn.className = 'primary';
+                potionBtn.onclick = () => combatAction('potion');
+                combatChoices.appendChild(potionBtn);
+            }
+            
+            const fleeBtn = document.createElement('button');
+            fleeBtn.textContent = 'Попытаться сбежать (50% шанс)';
+            fleeBtn.className = 'danger';
+            fleeBtn.onclick = () => combatAction('flee');
+            combatChoices.appendChild(fleeBtn);
+            
+            updateCombatLog(`Бой начинается! Ты встретил ${enemies[enemyId].name}!`);
+        }
+
+        function combatAction(action) {
+            const enemy = gameState.currentEnemy;
+            const enemyData = enemies[enemy.id];
+            let playerDefense = gameState.defense;
+            
+            // Обрабатываем действие игрока
+            switch (action) {
+                case 'attack':
+                    const playerDamage = Math.max(1, gameState.attack - enemyData.defense);
+                    enemy.currentHealth -= playerDamage;
+                    updateCombatLog(`Ты наносишь ${playerDamage} урона!`);
+                    break;
+                    
+                case 'defend':
+                    playerDefense = Math.floor(gameState.defense * 1.5);
+                    updateCombatLog('Ты готовишься к защите!');
+                    break;
+                    
+                case 'potion':
+                    items['health_potion'].use(gameState);
+                    gameState.inventory = gameState.inventory.filter(id => id !== 'health_potion');
+                    updateCombatLog('Ты выпиваешь зелье здоровья! +30 HP');
+                    updateUI();
+                    break;
+                    
+                case 'flee':
+                    if (Math.random() < 0.5) {
+                        updateCombatLog('Тебе удалось сбежать!');
+                        endCombat(false);
+                        return;
+                    } else {
+                        updateCombatLog('Тебе не удалось сбежать!');
+                    }
+                    break;
+            }
+            
+            // Проверяем, побежден ли враг
+            if (enemy.currentHealth <= 0) {
+                updateCombatLog(`Ты победил ${enemyData.name}! Получено ${enemyData.xp} опыта и ${enemyData.gold} золота.`);
+                gameState.xp += enemyData.xp;
+                gameState.gold += enemyData.gold;
+                gameState.killedEnemies.push(enemy.id);
+                checkLevelUp();
+                endCombat(true);
+                return;
+            }
+            
+            // Ход врага
+            const enemyDamage = Math.max(1, enemyData.attack - playerDefense);
+            gameState.health -= enemyDamage;
+            updateCombatLog(`${enemyData.name} наносит тебе ${enemyDamage} урона!`);
+            
+            // Проверяем здоровье игрока
+            if (gameState.health <= 0) {
+                endGame('Ты был побежден в бою... Игра окончена.');
+                return;
+            }
+            
+            // Обновляем UI
+            document.getElementById('enemy-health').textContent = `${enemy.currentHealth}/${enemyData.health}`;
+            document.getElementById('health').textContent = `${gameState.health}/${gameState.maxHealth}`;
+        }
+
+        function updateCombatLog(message) {
+            const log = document.getElementById('combat-log');
+            log.innerHTML += `<div>${message}</div>`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function endCombat(victory) {
+            gameState.inCombat = false;
+            gameState.currentEnemy = null;
+            
+            document.getElementById('combat-screen').classList.add('hidden');
+            document.getElementById('story-screen').classList.remove('hidden');
+            document.getElementById('combat-log').innerHTML = '';
+            
+            // После боя возвращаемся на предыдущую сцену
+            updateUI();
+        }
+
+        // ===== КВЕСТЫ =====
+        function checkQuests() {
+            let completed = [];
+            
+            gameState.activeQuests.forEach(questId => {
+                const quest = quests[questId];
+                let completedQuest = false;
+                
+                // Проверяем квест на предмет
+                if (quest.requiredItem && gameState.inventory.includes(quest.requiredItem)) {
+                    completedQuest = true;
+                    // Удаляем предмет, если он требуется для завершения
+                    gameState.inventory = gameState.inventory.filter(id => id !== quest.requiredItem);
+                }
+                
+                // Проверяем квест на убийство врага
+                if (quest.requiredKill && gameState.killedEnemies.includes(quest.requiredKill)) {
+                    completedQuest = true;
+                }
+                
+                if (completedQuest) {
+                    gameState.xp += quest.reward.xp || 0;
+                    gameState.gold += quest.reward.gold || 0;
+                    gameState.completedQuests.push(questId);
+                    completed.push(questId);
+                    alert(`Квест "${quest.name}" завершен! Награда: ${quest.reward.xp || 0} опыта, ${quest.reward.gold || 0} золота.`);
+                }
+            });
+            
+            // Удаляем завершенные квесты из активных
+            gameState.activeQuests = gameState.activeQuests.filter(id => !completed.includes(id));
+            
+            if (completed.length > 0) {
+                checkLevelUp();
+            }
+        }
+
+        // ===== КОНЕЦ ИГРЫ =====
+        function endGame(message) {
+            document.getElementById('story').textContent = message;
+            document.getElementById('choices').innerHTML = '';
+            
+            const restartButton = document.createElement('button');
+            restartButton.textContent = 'Начать заново';
+            restartButton.onclick = restartGame;
+            document.getElementById('choices').appendChild(restartButton);
+        }
+
+        function restartGame() {
+            gameState = {
+                health: 100,
+                maxHealth: 100,
+                attack: 10,
+                baseAttack: 10,
+                defense: 5,
+                baseDefense: 5,
+                xp: 0,
+                level: 1,
+                gold: 50,
+                currentScene: 'start',
+                visitedScenes: [],
+                completedQuests: [],
+                killedEnemies: [],
+                inventory: [],
+                equipped: {
+                    weapon: null,
+                    armor: null
+                },
+                inCombat: false,
+                currentEnemy: null,
+                activeQuests: []
+            };
+            
+            updateUI();
+        }
+
+        // ===== СОХРАНЕНИЕ ИГРЫ =====
+        function saveGame() {
+            localStorage.setItem('rpg_game_save', JSON.stringify(gameState));
+            alert('Игра сохранена!');
+        }
+
+        function loadGame() {
+            const savedGame = localStorage.getItem('rpg_game_save');
+            if (savedGame) {
+                gameState = JSON.parse(savedGame);
+                alert('Игра загружена!');
+                updateUI();
+            } else {
+                alert('Сохранение не найдено. Начинаем новую игру.');
+                restartGame();
+            }
+        }
+
+        function resetGame() {
+            if (confirm('Точно сбросить игру? Весь прогресс будет потерян.')) {
+                localStorage.removeItem('rpg_game_save');
+                restartGame();
+            }
+        }
+
+        // Запускаем игру при загрузке страницы
+        window.onload = startGame;
+    </script>
 </body>
 </html>
