@@ -124,6 +124,12 @@
             transform: scale(1.05);
         }
         
+        .play-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -155,6 +161,51 @@
             margin: 20px 0;
             text-align: center;
         }
+        
+        .game-screen {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            border: 2px solid #00ff88;
+            margin: 20px 0;
+        }
+        
+        .back-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .slot-machine {
+            font-size: 4em;
+            margin: 20px 0;
+        }
+        
+        .bonus-section {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 15px;
+            border: 2px solid gold;
+            margin: 20px 0;
+        }
+        
+        .bonus-code {
+            background: gold;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 20px 0;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -164,80 +215,101 @@
     </header>
     
     <nav class="nav">
-        <a href="#games">Игры</a>
-        <a href="#bonuses">Бонусы</a>
-        <a href="#about">О нас</a>
-        <a href="#support">Поддержка</a>
+        <a href="#" onclick="showSection('games')">Игры</a>
+        <a href="#" onclick="showSection('bonuses')">Бонусы</a>
     </nav>
     
     <div class="main-content">
-        <section class="welcome-section">
-            <h1 class="welcome-title">Добро пожаловать в FoCoin Casino!</h1>
-            <p>Первое казино с поддержкой FoCoin и других криптовалют</p>
-            <p>Быстрые выплаты • Анонимность • Честная игра</p>
-            <button class="play-btn" style="margin-top: 30px; padding: 15px 40px; font-size: 1.2em;">
-                Начать играть
-            </button>
-        </section>
-        
-        <div class="warning">
-            ⚠️ Играйте ответственно. Казино предназначено только для развлекательных целей.
+        <!-- Основной экран -->
+        <div id="main-screen">
+            <section class="welcome-section">
+                <h1 class="welcome-title">Добро пожаловать в FoCoin Casino!</h1>
+                <p>Первое казино с поддержкой FoCoin и других криптовалют</p>
+                <p>Быстрые выплаты • Анонимность • Честная игра</p>
+                <button class="play-btn" onclick="showSection('games')" style="margin-top: 30px; padding: 15px 40px; font-size: 1.2em;">
+                    Начать играть
+                </button>
+            </section>
+            
+            <div class="warning">
+                ⚠️ Играйте ответственно. Казино предназначено только для развлекательных целей.
+            </div>
+            
+            <h2 style="text-align: center; margin: 40px 0; color: #00ff88;">Популярные игры</h2>
+            
+            <div class="games-grid">
+                <div class="game-card">
+                    <div class="game-icon">🎰</div>
+                    <h3>Слоты FoCoin</h3>
+                    <p>Классические слоты с крипто-призами</p>
+                    <button class="play-btn" onclick="startGame('slots')">Играть</button>
+                </div>
+                
+                <div class="game-card">
+                    <div class="game-icon">♠️</div>
+                    <h3>Блэкджек</h3>
+                    <p>Испытайте удачу в карточной игре</p>
+                    <button class="play-btn" onclick="startGame('blackjack')">Играть</button>
+                </div>
+                
+                <div class="game-card">
+                    <div class="game-icon">🎲</div>
+                    <h3>Кости</h3>
+                    <p>Простая игра с высокими ставками</p>
+                    <button class="play-btn" onclick="startGame('dice')">Играть</button>
+                </div>
+                
+                <div class="game-card">
+                    <div class="game-icon">🃏</div>
+                    <h3>Покер</h3>
+                    <p>Турниры и кэш-игры</p>
+                    <button class="play-btn" onclick="startGame('poker')">Играть</button>
+                </div>
+            </div>
+            
+            <h2 style="text-align: center; margin: 40px 0; color: #00ff88;">Наши преимущества</h2>
+            
+            <div class="features">
+                <div class="feature">
+                    <h3>💎 Принимаем FoCoin</h3>
+                    <p>Депозиты и вывод в FoCoin и других криптовалютах</p>
+                </div>
+                
+                <div class="feature">
+                    <h3>⚡ Мгновенные выплаты</h3>
+                    <p>Вывод выигрышей за считанные минуты</p>
+                </div>
+                
+                <div class="feature">
+                    <h3>🔒 Безопасность</h3>
+                    <p>Ваши данные под надежной защитой</p>
+                </div>
+                
+                <div class="feature">
+                    <h3>🎁 Щедрые бонусы</h3>
+                    <p>Регулярные акции и специальные предложения</p>
+                </div>
+            </div>
         </div>
-        
-        <h2 style="text-align: center; margin: 40px 0; color: #00ff88;">Популярные игры</h2>
-        
-        <div class="games-grid">
-            <div class="game-card">
-                <div class="game-icon">🎰</div>
-                <h3>Слоты FoCoin</h3>
-                <p>Классические слоты с крипто-призами</p>
-                <button class="play-btn">Играть</button>
-            </div>
-            
-            <div class="game-card">
-                <div class="game-icon">♠️</div>
-                <h3>Блэкджек</h3>
-                <p>Испытайте удачу в карточной игре</p>
-                <button class="play-btn">Играть</button>
-            </div>
-            
-            <div class="game-card">
-                <div class="game-icon">🎲</div>
-                <h3>Кости</h3>
-                <p>Простая игра с высокими ставками</p>
-                <button class="play-btn">Играть</button>
-            </div>
-            
-            <div class="game-card">
-                <div class="game-icon">🃏</div>
-                <h3>Покер</h3>
-                <p>Турниры и кэш-игры</p>
-                <button class="play-btn">Играть</button>
-            </div>
+
+        <!-- Экран бонусов -->
+        <div id="bonuses-section" class="bonus-section">
+            <h2 style="color: gold;">Бонусы FoCoin Casino</h2>
+            <div class="bonus-code">FOCOIN100</div>
+            <p>Используйте промокод для получения 100% бонуса на первый депозит!</p>
+            <p>🎁 Приветственный бонус: 150% + 100 фриспинов</p>
+            <p>💰 Кэшбэк: 10% каждую неделю</p>
+            <p>🎯 VIP программа с эксклюзивными бонусами</p>
+            <button class="back-btn" onclick="showSection('main')">Назад к играм</button>
         </div>
-        
-        <h2 style="text-align: center; margin: 40px 0; color: #00ff88;">Наши преимущества</h2>
-        
-        <div class="features">
-            <div class="feature">
-                <h3>💎 Принимаем FoCoin</h3>
-                <p>Депозиты и вывод в FoCoin и других криптовалютах</p>
+
+        <!-- Игровые экраны -->
+        <div id="game-screen" class="game-screen">
+            <h2 id="game-title">Игра</h2>
+            <div id="game-content">
+                <!-- Контент игры будет здесь -->
             </div>
-            
-            <div class="feature">
-                <h3>⚡ Мгновенные выплаты</h3>
-                <p>Вывод выигрышей за считанные минуты</p>
-            </div>
-            
-            <div class="feature">
-                <h3>🔒 Безопасность</h3>
-                <p>Ваши данные под надежной защитой</p>
-            </div>
-            
-            <div class="feature">
-                <h3>🎁 Щедрые бонусы</h3>
-                <p>Регулярные акции и специальные предложения</p>
-            </div>
+            <button class="back-btn" onclick="showSection('games')">Выйти из игры</button>
         </div>
     </div>
     
@@ -248,5 +320,103 @@
             Играйте ответственно. 18+
         </p>
     </footer>
+
+    <script>
+        function showSection(section) {
+            // Скрываем все секции
+            document.getElementById('main-screen').style.display = 'none';
+            document.getElementById('bonuses-section').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'none';
+            
+            // Показываем нужную секцию
+            if (section === 'main' || section === 'games') {
+                document.getElementById('main-screen').style.display = 'block';
+            } else if (section === 'bonuses') {
+                document.getElementById('bonuses-section').style.display = 'block';
+            }
+        }
+
+        function startGame(gameType) {
+            // Показываем игровой экран
+            document.getElementById('main-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            
+            const gameContent = document.getElementById('game-content');
+            const gameTitle = document.getElementById('game-title');
+            
+            switch(gameType) {
+                case 'slots':
+                    gameTitle.textContent = 'Слоты FoCoin';
+                    gameContent.innerHTML = `
+                        <div class="slot-machine">🎰 🎰 🎰</div>
+                        <p>Ставка: 10 FoCoin</p>
+                        <button class="play-btn" onclick="spinSlots()">Крутить!</button>
+                        <p id="slots-result" style="margin-top: 20px;"></p>
+                    `;
+                    break;
+                    
+                case 'blackjack':
+                    gameTitle.textContent = 'Блэкджек';
+                    gameContent.innerHTML = `
+                        <p>Раздача карт...</p>
+                        <div style="font-size: 2em; margin: 20px 0;">🂡 🂭</div>
+                        <p>Ваши карты: 21 очко</p>
+                        <button class="play-btn">Ещё карту</button>
+                        <button class="play-btn">Хватит</button>
+                    `;
+                    break;
+                    
+                case 'dice':
+                    gameTitle.textContent = 'Кости';
+                    gameContent.innerHTML = `
+                        <div style="font-size: 3em; margin: 20px 0;">🎲 🎲</div>
+                        <p>Сделайте ставку и бросьте кости!</p>
+                        <button class="play-btn" onclick="rollDice()">Бросить кости</button>
+                        <p id="dice-result" style="margin-top: 20px;"></p>
+                    `;
+                    break;
+                    
+                case 'poker':
+                    gameTitle.textContent = 'Покер';
+                    gameContent.innerHTML = `
+                        <p>Добро пожаловать в покер-рум!</p>
+                        <div style="font-size: 2em; margin: 20px 0;">🂡 🂮</div>
+                        <button class="play-btn">Присоединиться к столу</button>
+                    `;
+                    break;
+            }
+        }
+
+        function spinSlots() {
+            const symbols = ['🎰', '🍒', '🍋', '⭐', '💎', '7️⃣'];
+            const result = [
+                symbols[Math.floor(Math.random() * symbols.length)],
+                symbols[Math.floor(Math.random() * symbols.length)],
+                symbols[Math.floor(Math.random() * symbols.length)]
+            ];
+            
+            document.querySelector('.slot-machine').textContent = result.join(' ');
+            
+            const resultElement = document.getElementById('slots-result');
+            if (result[0] === result[1] && result[1] === result[2]) {
+                resultElement.textContent = '🎉 ДЖЕКПОТ! Вы выиграли 1000 FoCoin!';
+                resultElement.style.color = '#00ff88';
+            } else {
+                resultElement.textContent = 'Попробуйте ещё раз!';
+                resultElement.style.color = 'white';
+            }
+        }
+
+        function rollDice() {
+            const dice1 = Math.floor(Math.random() * 6) + 1;
+            const dice2 = Math.floor(Math.random() * 6) + 1;
+            const total = dice1 + dice2;
+            
+            document.getElementById('dice-result').innerHTML = `
+                Результат: ${dice1} + ${dice2} = <strong>${total}</strong><br>
+                ${total === 7 ? '🎉 Вы выиграли!' : 'Попробуйте ещё раз!'}
+            `;
+        }
+    </script>
 </body>
 	</html>
